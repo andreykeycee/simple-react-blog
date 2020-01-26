@@ -1,0 +1,36 @@
+{
+  "name": "srb-server",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "dev": "rollup -c -w"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "@typegoose/typegoose": "^6.2.2",
+    "@types/express": "^4.17.2",
+    "@types/graphql": "^14.5.0",
+    "@types/node": "^13.5.0",
+    "apollo-server": "^2.9.16",
+    "apollo-server-express": "^2.9.16",
+    "express": "^4.17.1",
+    "graphql": "^14.5.8",
+    "mongoose": "^5.8.9",
+    "nodemon": "^2.0.2",
+    "reflect-metadata": "^0.1.13",
+    "rollup": "^1.29.1",
+    "rollup-plugin-auto-external": "^2.0.0",
+    "rollup-plugin-commonjs": "^10.1.0",
+    "rollup-plugin-graphql": "^0.1.0",
+    "rollup-plugin-json": "^4.0.0",
+    "rollup-plugin-run": "^1.1.0",
+    "rollup-plugin-typescript2": "^0.25.3",
+    "rollup-watch": "^4.3.1",
+    "srb-shared": "file:../srb-shared/",
+    "type-graphql": "^0.17.6",
+    "typescript": "^3.7.5"
+  }
+}

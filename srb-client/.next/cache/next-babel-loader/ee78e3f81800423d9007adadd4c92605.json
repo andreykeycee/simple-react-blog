@@ -1,0 +1,1 @@
+{"ast":null,"code":"","map":{"version":3,"sources":[],"names":[],"mappings":"","sourcesContent":["import { ID } from './ID'\r\n\r\nexport type _User = ID & {\r\n  name: string\r\n  email: string\r\n}"]},"metadata":{},"sourceType":"module"}

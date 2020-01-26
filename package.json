@@ -1,0 +1,21 @@
+{
+  "name": "simple-react-blog",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "client": "npm run dev --prefix ./srb-client",
+    "server": "npm run dev --prefix ./srb-server"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/andreykeycee/simple-react-blog.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/andreykeycee/simple-react-blog/issues"
+  },
+  "homepage": "https://github.com/andreykeycee/simple-react-blog#readme"
+}
