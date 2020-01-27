@@ -2,7 +2,7 @@
   "name": "simple-react-blog",
   "version": "1.0.0",
   "description": "",
-  "main": "index.js",
+  "main": "index.ts",
   "scripts": {
     "client": "npm run dev --prefix ./srb-client",
     "server": "npm run dev --prefix ./srb-server"

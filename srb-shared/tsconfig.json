@@ -1,0 +1,23 @@
+{
+  "compilerOptions": {
+    "allowSyntheticDefaultImports": true,
+    "target": "es2018",
+    "module": "ESNext",
+    "emitDecoratorMetadata": true,
+    "experimentalDecorators": true,
+    "outDir": "./dist",
+    "moduleResolution": "node",
+    "esModuleInterop": true,
+    "lib": [
+      "esnext"
+    ],
+    "baseUrl": "."
+  },
+  "baseUrl": "types",
+  "typeRoots": [
+    "types"
+  ],
+  "include": [
+    "./**/*.ts"
+  ]
+}

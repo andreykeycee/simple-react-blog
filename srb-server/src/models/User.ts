@@ -1,11 +1,11 @@
 import { _User } from 'srb-shared'
 import { Field, ID, ObjectType } from 'type-graphql'
-import { prop } from '@typegoose/typegoose'
+import { getModelForClass, prop } from '@typegoose/typegoose'
 
 @ObjectType()
 export class User implements _User {
   @Field(type => ID)
-  _id: string
+  _id?: string
 
   @Field()
   @prop()
@@ -15,7 +15,13 @@ export class User implements _User {
   @prop()
   email: string
 
-  @Field()
   @prop()
-  password: string
+  password?: string
 }
+
+export const UserModel = getModelForClass(User, {
+  schemaOptions: {
+    timestamps: true,
+    collection: 'users'
+  }
+})

@@ -4,6 +4,7 @@ import commonjs from 'rollup-plugin-commonjs'
 import json from 'rollup-plugin-json'
 import autoExternal from 'rollup-plugin-auto-external'
 import run from 'rollup-plugin-run'
+import babel from 'rollup-plugin-babel'
 
 export default {
   input: './src/index.ts',
@@ -15,8 +16,14 @@ export default {
     exclude: ['node_modules/**']
   },
   plugins: [
+    babel({
+      exclude: 'node_modules/**'
+    }),
     typescript({
-      include: ['./src/**/*.ts']
+      include: [
+        './src/**/*.ts',
+        '../srb-shared/**/*.ts'
+      ]
     }),
     autoExternal(),
     graphql(),

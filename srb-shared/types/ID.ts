@@ -1,5 +1,5 @@
 export type ID = {
-  _id: ObjectId
+  _id?: ObjectId
 }
 
 export type ObjectId = string

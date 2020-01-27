@@ -8,6 +8,9 @@ require('reflect-metadata');
 var mongoose = _interopDefault(require('mongoose'));
 var typeGraphql = require('type-graphql');
 var typegoose = require('@typegoose/typegoose');
+var bcrypt = _interopDefault(require('bcrypt'));
+var jwt = _interopDefault(require('jsonwebtoken'));
+var lodash = require('lodash');
 
 /*! *****************************************************************************
 Copyright (c) Microsoft Corporation. All rights reserved.
@@ -29,6 +32,10 @@ function __decorate(decorators, target, key, desc) {
     if (typeof Reflect === "object" && typeof Reflect.decorate === "function") r = Reflect.decorate(decorators, target, key, desc);
     else for (var i = decorators.length - 1; i >= 0; i--) if (d = decorators[i]) r = (c < 3 ? d(r) : c > 3 ? d(target, key, r) : d(target, key)) || r;
     return c > 3 && r && Object.defineProperty(target, key, r), r;
+}
+
+function __param(paramIndex, decorator) {
+    return function (target, key) { decorator(target, key, paramIndex); }
 }
 
 function __metadata(metadataKey, metadataValue) {
@@ -114,7 +121,6 @@ var User = /** @class */ (function () {
         __metadata("design:type", String)
     ], User.prototype, "email", void 0);
     __decorate([
-        typeGraphql.Field(),
         typegoose.prop(),
         __metadata("design:type", String)
     ], User.prototype, "password", void 0);
@@ -123,23 +129,246 @@ var User = /** @class */ (function () {
     ], User);
     return User;
 }());
+var UserModel = typegoose.getModelForClass(User, {
+    schemaOptions: {
+        timestamps: true,
+        collection: 'users'
+    }
+});
 
+var ErrorTypes;
+(function (ErrorTypes) {
+    ErrorTypes["REGISTER_FAILED"] = "REGISTER_FAILED";
+    ErrorTypes["LOGIN_FAILED"] = "LOGIN_FAILED";
+})(ErrorTypes || (ErrorTypes = {}));
+
+var errorConstructor = function (type, message) { return ({ type: type, message: message }); };
+
+var errorResponse = function (type, message) { return ({
+    error: errorConstructor(type, message)
+}); };
+
+var hashPassword = function (password) { return __awaiter(void 0, void 0, void 0, function () {
+    var rounds;
+    return __generator(this, function (_a) {
+        rounds = 10;
+        return [2 /*return*/, bcrypt.hash(password, rounds)];
+    });
+}); };
+var verifyPassword = function (_a, passwordInput) {
+    var password = _a.password;
+    return bcrypt.compare(passwordInput, password);
+};
+var createToken = function (_a) {
+    var _id = _a._id;
+    return __awaiter(void 0, void 0, void 0, function () {
+        return __generator(this, function (_b) {
+            return [2 /*return*/, jwt.sign({ _id: _id }, 'jwt')];
+        });
+    });
+};
+var createUserResponse = function (user) { return __awaiter(void 0, void 0, void 0, function () {
+    var _a;
+    return __generator(this, function (_b) {
+        switch (_b.label) {
+            case 0:
+                _a = {
+                    user: lodash.pick(user, 'email', 'name')
+                };
+                return [4 /*yield*/, createToken({ _id: user._id })];
+            case 1: return [2 /*return*/, (_a.token = _b.sent(),
+                    _a)];
+        }
+    });
+}); };
+
+var register = function (request) { return __awaiter(void 0, void 0, void 0, function () {
+    var hasAllFields, isUserExists, _a;
+    return __generator(this, function (_b) {
+        switch (_b.label) {
+            case 0:
+                hasAllFields = !!(request.email && request.password);
+                return [4 /*yield*/, UserModel.findOne({ email: request.email }).exec()];
+            case 1:
+                isUserExists = !!(_b.sent());
+                if (!(hasAllFields && !isUserExists)) return [3 /*break*/, 3];
+                return [4 /*yield*/, createNewUser(request)];
+            case 2:
+                _a = _b.sent();
+                return [3 /*break*/, 4];
+            case 3:
+                _a = errorOnRegister({ hasAllFields: hasAllFields, isUserExists: isUserExists });
+                _b.label = 4;
+            case 4: return [2 /*return*/, _a];
+        }
+    });
+}); };
+var createNewUser = function (_a) {
+    var name = _a.name, email = _a.email, rawPassword = _a.password;
+    return __awaiter(void 0, void 0, void 0, function () {
+        var password, user;
+        return __generator(this, function (_b) {
+            switch (_b.label) {
+                case 0: return [4 /*yield*/, hashPassword(rawPassword)];
+                case 1:
+                    password = _b.sent();
+                    user = new UserModel({ name: name, email: email, password: password });
+                    return [4 /*yield*/, user.save()];
+                case 2:
+                    _b.sent();
+                    return [2 /*return*/, createUserResponse(user)];
+            }
+        });
+    });
+};
+var errorOnRegister = function (_a) {
+    var hasAllFields = _a.hasAllFields, isUserExists = _a.isUserExists;
+    var type = ErrorTypes.REGISTER_FAILED;
+    var message = !hasAllFields
+        ? 'Fill all fields'
+        : isUserExists
+            ? 'User already exists'
+            : 'Unknown error';
+    return errorResponse(type, message);
+};
+
+var login = function (request) { return __awaiter(void 0, void 0, void 0, function () {
+    var hasAllFields, user, _a, validCredentials, _b, _c;
+    return __generator(this, function (_d) {
+        switch (_d.label) {
+            case 0:
+                hasAllFields = !!(request.email && request.password);
+                if (!hasAllFields) return [3 /*break*/, 2];
+                return [4 /*yield*/, UserModel.findOne({ email: request.email }).exec()];
+            case 1:
+                _a = _d.sent();
+                return [3 /*break*/, 3];
+            case 2:
+                _a = null;
+                _d.label = 3;
+            case 3:
+                user = _a;
+                if (!user) return [3 /*break*/, 5];
+                return [4 /*yield*/, verifyPassword(user, request.password)];
+            case 4:
+                _b = _d.sent();
+                return [3 /*break*/, 6];
+            case 5:
+                _b = false;
+                _d.label = 6;
+            case 6:
+                validCredentials = _b;
+                if (!(hasAllFields && validCredentials)) return [3 /*break*/, 8];
+                return [4 /*yield*/, createUserResponse(user)];
+            case 7:
+                _c = _d.sent();
+                return [3 /*break*/, 9];
+            case 8:
+                _c = errorOnLogin({ hasAllFields: hasAllFields, validCredentials: validCredentials });
+                _d.label = 9;
+            case 9: return [2 /*return*/, _c];
+        }
+    });
+}); };
+var errorOnLogin = function (_a) {
+    var hasAllFields = _a.hasAllFields, validCredentials = _a.validCredentials;
+    var type = ErrorTypes.LOGIN_FAILED;
+    var message = !hasAllFields
+        ? 'Fill all fields'
+        : !validCredentials
+            ? 'Invalid credentials'
+            : 'Unknown error';
+    return errorResponse(type, message);
+};
+
+typeGraphql.registerEnumType(ErrorTypes, { name: 'ErrorTypes' });
+var AuthError = /** @class */ (function () {
+    function AuthError() {
+    }
+    __decorate([
+        typeGraphql.Field(function (type) { return ErrorTypes; }),
+        __metadata("design:type", String)
+    ], AuthError.prototype, "type", void 0);
+    __decorate([
+        typeGraphql.Field(),
+        __metadata("design:type", String)
+    ], AuthError.prototype, "message", void 0);
+    AuthError = __decorate([
+        typeGraphql.ObjectType()
+    ], AuthError);
+    return AuthError;
+}());
+var AuthPayload = /** @class */ (function () {
+    function AuthPayload() {
+    }
+    __decorate([
+        typeGraphql.Field(function (type) { return User; }, { nullable: true }),
+        __metadata("design:type", User)
+    ], AuthPayload.prototype, "user", void 0);
+    __decorate([
+        typeGraphql.Field({ nullable: true }),
+        __metadata("design:type", String)
+    ], AuthPayload.prototype, "token", void 0);
+    __decorate([
+        typeGraphql.Field(function (type) { return AuthError; }, { nullable: true }),
+        __metadata("design:type", AuthError)
+    ], AuthPayload.prototype, "error", void 0);
+    AuthPayload = __decorate([
+        typeGraphql.ObjectType()
+    ], AuthPayload);
+    return AuthPayload;
+}());
+var AuthRequest = /** @class */ (function () {
+    function AuthRequest() {
+    }
+    __decorate([
+        typeGraphql.Field(),
+        __metadata("design:type", String)
+    ], AuthRequest.prototype, "email", void 0);
+    __decorate([
+        typeGraphql.Field({ nullable: true }),
+        __metadata("design:type", String)
+    ], AuthRequest.prototype, "name", void 0);
+    __decorate([
+        typeGraphql.Field(),
+        __metadata("design:type", String)
+    ], AuthRequest.prototype, "password", void 0);
+    AuthRequest = __decorate([
+        typeGraphql.InputType()
+    ], AuthRequest);
+    return AuthRequest;
+}());
 var AuthResolvers = /** @class */ (function () {
     function AuthResolvers() {
     }
-    AuthResolvers.prototype.user = function () {
+    AuthResolvers.prototype.login = function (request) {
         return __awaiter(this, void 0, void 0, function () {
             return __generator(this, function (_a) {
-                return [2 /*return*/];
+                return [2 /*return*/, login(request)];
+            });
+        });
+    };
+    AuthResolvers.prototype.register = function (request) {
+        return __awaiter(this, void 0, void 0, function () {
+            return __generator(this, function (_a) {
+                return [2 /*return*/, register(request)];
             });
         });
     };
     __decorate([
-        typeGraphql.Query(function (returns) { return User; }),
+        typeGraphql.Query(function (returns) { return AuthPayload; }),
+        __param(0, typeGraphql.Arg('request')),
         __metadata("design:type", Function),
-        __metadata("design:paramtypes", []),
+        __metadata("design:paramtypes", [AuthRequest]),
         __metadata("design:returntype", Promise)
-    ], AuthResolvers.prototype, "user", null);
+    ], AuthResolvers.prototype, "login", null);
+    __decorate([
+        typeGraphql.Mutation(function (returns) { return AuthPayload; }),
+        __param(0, typeGraphql.Arg('request')),
+        __metadata("design:type", Function),
+        __metadata("design:paramtypes", [AuthRequest]),
+        __metadata("design:returntype", Promise)
+    ], AuthResolvers.prototype, "register", null);
     AuthResolvers = __decorate([
         typeGraphql.Resolver()
     ], AuthResolvers);
@@ -150,6 +379,7 @@ var buildSchema = (function () { return __awaiter(void 0, void 0, void 0, functi
     return __generator(this, function (_a) {
         switch (_a.label) {
             case 0: return [4 /*yield*/, typeGraphql.buildSchema({
+                    validate: false,
                     resolvers: [
                         AuthResolvers
                     ]
