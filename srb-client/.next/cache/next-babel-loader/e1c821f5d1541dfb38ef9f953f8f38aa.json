@@ -1,1 +1,0 @@
-{"ast":null,"code":"export * from './User';\nexport * from './ID';","map":{"version":3,"sources":["C:/Users/Andrew/Desktop/projects/simple-react-blog/srb-client/node_modules/srb-shared/types/index.ts"],"names":[],"mappings":"AAAA,cAAc,QAAd;AACA,cAAc,MAAd","sourcesContent":["export * from './User'\r\nexport * from './ID'"]},"metadata":{},"sourceType":"module"}

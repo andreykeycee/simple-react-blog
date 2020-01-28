@@ -1,1 +1,0 @@
-{"ast":null,"code":"","map":{"version":3,"sources":[],"names":[],"mappings":"","sourcesContent":["export type ID = {\r\n  _id: ObjectId\r\n}\r\n\r\nexport type ObjectId = string"]},"metadata":{},"sourceType":"module"}
