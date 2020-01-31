@@ -3,6 +3,7 @@
     "esModuleInterop": true,
     "emitDecoratorMetadata": true,
     "experimentalDecorators": true,
+    "moduleResolution": "node",
     "target": "es5",
     "lib": ["es2016", "esnext.asynciterable"],
     "baseUrl": ".",
@@ -10,5 +11,6 @@
       "@/*": ["./src/*"],
       "srb-shared": ["../srb-shared/"]
     }
-  }
+  },
+  "include": ["../srb-shared/**/*.ts"]
 }

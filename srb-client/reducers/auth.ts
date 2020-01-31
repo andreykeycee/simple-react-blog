@@ -25,12 +25,13 @@ export default (state = initialState, action: AuthAction) => {
       USER_LOADED,
       REGISTER_SUCCESS,
       LOGIN_SUCCESS
-    ), () => loadUser(state, action.payload))
+    ), () => loadUser(state, action.payload as PayloadOnSuccess))
     .when(typeIs(
       LOGIN_FAILED,
       REGISTER_FAILED,
       LOGOUT_SUCCESS
     ), () => cleanState())
+    .otherwise(state)
 }
 
 
@@ -70,12 +71,17 @@ type AuthState = {
   token: string
 }
 
-type AuthAction = {
+export type AuthAction = {
   type: string,
-  payload: {
-    email: string
-    name: string
-    token: string
-    error: _Error
-  }
+  payload: PayloadOnSuccess | PayloadOnError
+}
+
+type PayloadOnSuccess = {
+  email: string
+  name: string
+  token: string
+}
+
+type PayloadOnError = {
+  error: _Error
 }

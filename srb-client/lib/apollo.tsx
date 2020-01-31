@@ -68,9 +68,9 @@ export function withApollo(PageComponent, { ssr = true } = {}) {
             await getDataFromTree(
               <AppTree
                 pageProps={{
-            ...pageProps,
-                apolloClient,
-            }}
+                  ...pageProps,
+                  apolloClient,
+              }}
             />
           )
           } catch (error) {
