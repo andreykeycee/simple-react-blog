@@ -15,10 +15,9 @@ class AuthRegister extends React.Component<{}, AuthRegisterState> {
       passwordToConfirm: '',
       errors: createObjectFromStrings(
         false,
-        'email', 'name', 'password', 'passwordConfirmed'
+        'email', 'name', 'password', 'passwordToConfirm'
       )
     }
-
   }
 
   setValue = (key: keyof AuthRegisterState) => (e) => {
@@ -30,14 +29,32 @@ class AuthRegister extends React.Component<{}, AuthRegisterState> {
     })
   }
 
-  verifyValue = (key: keyof AuthRegisterState, value: string): boolean => {
-    return match(key)
+  verifyValue = (key: keyof RegisterForm, value: string) => {
+    const isValid = match(key)
       .when(keyIs('email'), () => emailRe.test(value))
       .when(keyIs('password'), () => passwordRe.test(value))
-      .when(keyIs('passwordConfirmed'), () => value === this.state.password)
+      .when(keyIs('passwordToConfirm'), () => value === this.state.password)
       .otherwise(true)
 
+    this.setState({
+      ...this.state,
+      errors: {
+        ...this.state.errors,
+        [key]: !isValid
+      }
+    })
+  }
 
+  generateError = (key: keyof RegisterForm) => {
+    const errorText = (): string => match(key)
+      .when(keyIs('email'), 'wrong email')
+      .when(keyIs('password'), 'password too weak')
+      .when(keyIs('passwordToConfirm'), 'passwords do not match')
+      .otherwise('unknown error')
+
+    return this.state.errors[key]
+      ? errorText()
+      : ''
   }
 
   onSubmit = () => {
@@ -45,7 +62,7 @@ class AuthRegister extends React.Component<{}, AuthRegisterState> {
   }
 
   render () {
-    const { email } = this.state
+    const { email, name, password, passwordToConfirm } = this.state
 
     return (
       <AuthBase
@@ -58,7 +75,29 @@ class AuthRegister extends React.Component<{}, AuthRegisterState> {
             label="email"
             name="email"
             value={email}
+            errorText={this.generateError('email')}
             setValue={this.setValue('email')}
+          />
+          <BaseInputGroup
+            label="name"
+            name="name"
+            value={name}
+            errorText={this.generateError('name')}
+            setValue={this.setValue('name')}
+          />
+          <BaseInputGroup
+            label="password"
+            name="password"
+            value={password}
+            errorText={this.generateError('password')}
+            setValue={this.setValue('password')}
+          />
+          <BaseInputGroup
+            label="passwordToConfirm"
+            name="passwordToConfirm"
+            value={passwordToConfirm}
+            errorText={this.generateError('passwordToConfirm')}
+            setValue={this.setValue('passwordToConfirm')}
           />
         </div>
       </AuthBase>

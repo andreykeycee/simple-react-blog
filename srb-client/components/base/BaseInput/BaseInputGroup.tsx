@@ -3,7 +3,7 @@ import { BaseInputProps } from '@/components/base/BaseInput/input.utils'
 import BaseInput from '@/components/base/BaseInput/BaseInput'
 
 const BaseInputGroup = (props: BaseInputGroupProps) => {
-  const { label, ...inputProps } = props
+  const { errorText, label, ...inputProps } = props
 
   return (
     <div className="base-input-group">
@@ -11,6 +11,7 @@ const BaseInputGroup = (props: BaseInputGroupProps) => {
       <div className="input-container">
         <BaseInput { ...inputProps }/>
       </div>
+      <div className="error-container">{ errorText }</div>
     </div>
   )
 }
@@ -19,4 +20,5 @@ export default BaseInputGroup
 
 type BaseInputGroupProps = BaseInputProps & {
   label: string
+  errorText: string
 }
