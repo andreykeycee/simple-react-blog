@@ -14,7 +14,7 @@ const initialState: AuthState = {
   name: null,
   email: null,
   isLoading: false,
-  token: localStorage.getItem('auth-token')
+  token: null
 }
 
 
@@ -64,7 +64,7 @@ const loadingState = (state) => ({
 })
 
 
-type AuthState = {
+export type AuthState = {
   name: string
   email: string
   isLoading: boolean

@@ -1,4 +1,3 @@
-import { AuthAction } from '@/reducers/auth'
 import { GET_ERRORS, REGISTER_FAILED, REGISTER_SUCCESS, USER_LOADING } from '@/actions/actionTypes'
 import { registerUser } from '@/helpers/apollo/auth'
 
@@ -19,7 +18,10 @@ export const register = (registerData) => async (dispatch, getState) => {
   } else {
     dispatch({
       type: REGISTER_SUCCESS,
-      payload: registerResult.user
+      payload: {
+        ...registerResult.user,
+        token: registerResult.token
+      }
     })
   }
 }

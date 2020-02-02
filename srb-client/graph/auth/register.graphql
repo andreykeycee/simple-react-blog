@@ -1,7 +1,7 @@
 mutation register (
-  $email: String
+  $email: String!
   $name: String
-  $password: String
+  $password: String!
 ) {
   register (
     request: {
@@ -13,11 +13,11 @@ mutation register (
     user {
       name
       email
-      password
     }
     error {
       type
       message
     }
+    token
   }
 }

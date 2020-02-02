@@ -3,8 +3,11 @@ import AuthBase from '@/components/Auth/AuthBase'
 import BaseInputGroup from '@/components/base/BaseInput/BaseInputGroup'
 import { createObjectFromStrings, match, typeIs } from 'srb-shared'
 import { emailRe, passwordRe } from '@/components/base/BaseInput/input.utils'
+import { register } from '@/actions/auth'
+import { connect } from 'react-redux'
+import { UIErrors } from '@/helpers/types'
 
-class AuthRegister extends React.Component<{}, AuthRegisterState> {
+class AuthRegister extends React.Component<AuthRegisterProps, AuthRegisterState> {
   constructor (props) {
     super(props)
 
@@ -20,29 +23,33 @@ class AuthRegister extends React.Component<{}, AuthRegisterState> {
     }
   }
 
-  setValue = (key: keyof AuthRegisterState) => (e) => {
+  get isValidForm (): boolean {
+    return !!Object.values(this.state.errors).filter(x => x).length
+  }
+
+  setValue = (key: keyof RegisterForm) => (e) => {
     const { value } = e.target
+
+    const errors = this.verifyValue(key, value)
 
     this.setState({
       ...this.state,
-      [key]: value
+      [key]: value,
+      errors
     })
   }
 
-  verifyValue = (key: keyof RegisterForm, value: string) => {
+  verifyValue = (key: keyof RegisterForm, value: string): RegisterErrors => {
     const isValid = match(key)
       .when(keyIs('email'), () => emailRe.test(value))
       .when(keyIs('password'), () => passwordRe.test(value))
       .when(keyIs('passwordToConfirm'), () => value === this.state.password)
       .otherwise(true)
 
-    this.setState({
-      ...this.state,
-      errors: {
-        ...this.state.errors,
-        [key]: !isValid
-      }
-    })
+    return {
+      ...this.state.errors,
+      [key]: !isValid
+    }
   }
 
   generateError = (key: keyof RegisterForm) => {
@@ -57,8 +64,10 @@ class AuthRegister extends React.Component<{}, AuthRegisterState> {
       : ''
   }
 
-  onSubmit = () => {
-    console.log('test')
+  onSubmit = async () => {
+    const { errors, ...form } = this.state
+
+    await this.props.submitForm(form)
   }
 
   render () {
@@ -89,6 +98,7 @@ class AuthRegister extends React.Component<{}, AuthRegisterState> {
             label="password"
             name="password"
             value={password}
+            type="password"
             errorText={this.generateError('password')}
             setValue={this.setValue('password')}
           />
@@ -96,6 +106,7 @@ class AuthRegister extends React.Component<{}, AuthRegisterState> {
             label="passwordToConfirm"
             name="passwordToConfirm"
             value={passwordToConfirm}
+            type="password"
             errorText={this.generateError('passwordToConfirm')}
             setValue={this.setValue('passwordToConfirm')}
           />
@@ -105,9 +116,21 @@ class AuthRegister extends React.Component<{}, AuthRegisterState> {
   }
 }
 
-export default AuthRegister
+const mapDispatchToProps = (dispatch) => ({
+  submitForm: async (form: RegisterForm) => dispatch(register(form))
+})
+
+export default connect(state => ({}), mapDispatchToProps)(AuthRegister)
 
 const keyIs = typeIs
+
+type AuthRegisterProps = {
+  submitForm: (form: RegisterForm) => void
+}
+
+type AuthRegisterState = RegisterForm & {
+  errors: UIErrors<RegisterForm>
+}
 
 type RegisterForm = {
   name: string
@@ -116,10 +139,4 @@ type RegisterForm = {
   passwordToConfirm: string
 }
 
-type AuthRegisterState = RegisterForm & {
-  errors: UIErrors<RegisterForm>
-}
-
-type UIErrors<S> = {
-  [K in keyof S]: boolean
-}
+type RegisterErrors = UIErrors<RegisterForm>

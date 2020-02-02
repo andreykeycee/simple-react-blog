@@ -11,6 +11,5 @@
       "@/*": ["./src/*"],
       "srb-shared": ["../srb-shared/"]
     }
-  },
-  "include": ["../srb-shared/**/*.ts"]
+  }
 }
