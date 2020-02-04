@@ -1,0 +1,11 @@
+fragment auth_payload on AuthPayload {
+  user {
+    name
+    email
+  }
+  error {
+    type
+    message
+  }
+  token
+}

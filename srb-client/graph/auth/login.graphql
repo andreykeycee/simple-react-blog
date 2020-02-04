@@ -1,14 +1,12 @@
 #import "@/graph/auth/auth_payload.graphql"
 
-mutation register (
+query login (
   $email: String!
-  $name: String
   $password: String!
 ) {
-  register (
+  login (
     request: {
       email: $email
-      name: $name
       password: $password
     }
   ) {

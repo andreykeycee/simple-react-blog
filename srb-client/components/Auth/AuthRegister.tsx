@@ -76,7 +76,7 @@ class AuthRegister extends React.Component<AuthRegisterProps, AuthRegisterState>
     return (
       <AuthBase
         title="Registration"
-        buttonText="Submit"
+        buttonText="Sign up"
         onSubmit={this.onSubmit}
       >
         <div className="register-form">
