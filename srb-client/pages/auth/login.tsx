@@ -1,11 +1,10 @@
 import React from 'react'
-import AuthRegister from '@/components/Auth/AuthRegister'
-import { withRedux } from '@/lib/redux'
-import Router from 'next/router'
 import { AuthState } from '@/reducers/auth'
+import AuthLogin from '@/components/Auth/AuthLogin'
+import { withRedux } from '@/lib/redux'
 import { connect } from 'react-redux'
 
-class RegisterPage extends React.Component<RegisterPageProps> {
+class LoginPage extends React.Component<LoginPageProps> {
   constructor (props) {
     super(props)
   }
@@ -17,14 +16,14 @@ class RegisterPage extends React.Component<RegisterPageProps> {
   }
 
   render () {
-    return <AuthRegister/>
+    return <AuthLogin/>
   }
 }
 
 const mapStateToProps = ({ auth: user }: { auth: AuthState }) => ({ user })
 
-export default withRedux(connect(mapStateToProps)(RegisterPage))
+export default withRedux(connect(mapStateToProps)(LoginPage))
 
-type RegisterPageProps = {
+type LoginPageProps = {
   user: AuthState
 }
