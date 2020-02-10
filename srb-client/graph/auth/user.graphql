@@ -1,0 +1,11 @@
+#import "@/graph/auth/auth_payload.graphql"
+
+query user (
+  $token: String!
+) {
+  user (
+    token: $token
+  ) {
+    ...auth_payload
+  }
+}

@@ -8,7 +8,7 @@ import { login } from '@/actions/auth'
 import { connect } from 'react-redux'
 
 
-class AuthLogin extends React.Component<{}, AuthLoginState> {
+class AuthLogin extends React.Component<AuthLoginProps, AuthLoginState> {
   constructor (props) {
     super(props)
 
@@ -52,8 +52,10 @@ class AuthLogin extends React.Component<{}, AuthLoginState> {
       : ''
   }
 
-  onSubmit = () => {
+  onSubmit = async () => {
+    const { errors, ...form } = this.state
 
+    await this.props.submitForm(form)
   }
 
   render () {

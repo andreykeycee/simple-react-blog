@@ -2,6 +2,7 @@ import { Arg, Field, InputType, Mutation, ObjectType, Query, registerEnumType, R
 import { User } from '@/models/User'
 import { _Error, ErrorTypes } from 'srb-shared'
 import { register, login } from '@/controllers/auth'
+import { getUser } from '@/controllers/auth/user'
 
 registerEnumType(ErrorTypes, { name: 'ErrorTypes' })
 
@@ -45,6 +46,13 @@ export class AuthResolvers {
     @Arg('request') request: AuthRequest
   ) {
     return login(request)
+  }
+
+  @Query(returns => AuthPayload)
+  async user (
+    @Arg('token') token: string
+  ) {
+    return getUser(token)
   }
 
   @Mutation(returns => AuthPayload)

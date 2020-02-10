@@ -7,9 +7,9 @@ export class User implements _User {
   @Field(type => ID)
   _id?: string
 
-  @Field()
+  @Field({ nullable: true })
   @prop()
-  name: string
+  name?: string
 
   @Field()
   @prop()

@@ -2,6 +2,7 @@ import { client } from '@/helpers/apollo/utils'
 import { fallible } from 'srb-shared'
 import register_mutation from '@/graph/auth/register.graphql'
 import login_query from '@/graph/auth/login.graphql'
+import user_query from '@/graph/auth/user.graphql'
 
 
 export const registerUser = async ({ name, email, password }) => {
@@ -32,6 +33,19 @@ export const loginUser = async ({ email, password }) => {
 
   return fallible({
     trier: loginAttempt,
+    catcher: console.error
+  })
+}
+
+
+export const getUser = async (token: string) => {
+  const getUserAttempt = async () => await client.query({
+    query: user_query,
+    variables: { token }
+  }).then(({ data }) => data.user)
+
+  return fallible({
+    trier: getUserAttempt,
     catcher: console.error
   })
 }

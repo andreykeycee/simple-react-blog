@@ -28,6 +28,12 @@ export const createToken = async ({ _id }: { _id: ObjectId }): Promise<string> =
 }
 
 
+export const verifyToken = async (token: string): Promise<{ _id: ObjectId }> => {
+
+  return jwt.verify(token, 'jwt')
+}
+
+
 export const createUserResponse = async (user: User): Promise<AuthPayload> => ({
   user: pick(user, 'email', 'name'),
   token: await createToken({ _id: user._id })

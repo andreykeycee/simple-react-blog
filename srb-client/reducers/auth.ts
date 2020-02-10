@@ -35,15 +35,17 @@ export default (state = initialState, action: AuthAction) => {
 }
 
 
-const loadUser = (state, { email, name, token }) => {
-  localStorage.setItem('auth-token', token)
+const loadUser = (state, { email, name, token = null }) => {
+  if (token) {
+    localStorage.setItem('auth-token', token)
+  }
 
   return {
     ...state,
     isLoading: false,
     email,
     name,
-    token
+    token: token || state.token
   }
 }
 

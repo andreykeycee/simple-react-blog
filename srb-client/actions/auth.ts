@@ -1,4 +1,11 @@
-import { GET_ERRORS, LOGIN_FAILED, REGISTER_FAILED, REGISTER_SUCCESS, USER_LOADING } from '@/actions/actionTypes'
+import {
+  GET_ERRORS,
+  LOGIN_FAILED,
+  LOGIN_SUCCESS,
+  REGISTER_FAILED,
+  REGISTER_SUCCESS,
+  USER_LOADING
+} from '@/actions/actionTypes'
 import { loginUser, registerUser } from '@/helpers/apollo/auth'
 
 export const register = (registerData) => async (dispatch, getState) => {
@@ -50,4 +57,17 @@ export const login = (loginData) => async (dispatch, getState) => {
       }
     })
   }
+}
+
+
+export const setUser = (authResult) => (dispatch) => {
+  if (!authResult.errors) {
+    dispatch({
+      type: LOGIN_SUCCESS,
+      payload: {
+        ...authResult.user
+      }
+    })
+  }
+
 }
