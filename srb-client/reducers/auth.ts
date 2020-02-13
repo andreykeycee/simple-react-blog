@@ -8,6 +8,9 @@ import {
   USER_LOADED,
   USER_LOADING
 } from '@/actions'
+import cookie from 'js-cookie'
+import { isAuthPath, testPathname } from '@/helpers'
+import Router from 'next/router'
 
 
 const initialState: AuthState = {
@@ -37,7 +40,11 @@ export default (state = initialState, action: AuthAction) => {
 
 const loadUser = (state, { email, name, token = null }) => {
   if (token) {
-    localStorage.setItem('auth-token', token)
+    cookie.set('auth-token', token)
+  }
+
+  if (testPathname(Router, isAuthPath)) {
+    Router.push('/')
   }
 
   return {
@@ -51,12 +58,13 @@ const loadUser = (state, { email, name, token = null }) => {
 
 
 const cleanState = () => {
-  localStorage.removeItem('auth-token')
+  cookie.remove('auth-token')
 
-  return {
-    ...initialState,
-    token: null
+  if (!testPathname(Router, isAuthPath)) {
+    Router.push('auth/login')
   }
+
+  return { ...initialState }
 }
 
 

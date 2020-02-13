@@ -60,11 +60,16 @@ class AuthLogin extends React.Component<AuthLoginProps, AuthLoginState> {
 
   render () {
     const { email, password } = this.state
+    const link = {
+      text: 'don\'t have an account?',
+      path: '/auth/register'
+    }
 
     return (
       <AuthBase
         title="Login"
         buttonText="Sign in"
+        link={link}
         onSubmit={this.onSubmit}
       >
         <BaseInputGroup

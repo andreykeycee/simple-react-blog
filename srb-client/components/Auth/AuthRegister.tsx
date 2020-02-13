@@ -73,10 +73,16 @@ class AuthRegister extends React.Component<AuthRegisterProps, AuthRegisterState>
   render () {
     const { email, name, password, passwordToConfirm } = this.state
 
+    const link = {
+      text: 'already registered?',
+      path: '/auth/login'
+    }
+
     return (
       <AuthBase
         title="Registration"
         buttonText="Sign up"
+        link={link}
         onSubmit={this.onSubmit}
       >
         <div className="register-form">

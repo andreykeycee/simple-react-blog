@@ -1,7 +1,7 @@
 import {
   GET_ERRORS,
   LOGIN_FAILED,
-  LOGIN_SUCCESS,
+  LOGIN_SUCCESS, LOGOUT_SUCCESS,
   REGISTER_FAILED,
   REGISTER_SUCCESS,
   USER_LOADING
@@ -61,7 +61,7 @@ export const login = (loginData) => async (dispatch, getState) => {
 
 
 export const setUser = (authResult) => (dispatch) => {
-  if (!authResult.errors) {
+  if (!authResult.error) {
     dispatch({
       type: LOGIN_SUCCESS,
       payload: {
@@ -69,5 +69,9 @@ export const setUser = (authResult) => (dispatch) => {
       }
     })
   }
+}
 
+
+export const logout = () => (dispatch, getState) => {
+  dispatch({ type: LOGOUT_SUCCESS })
 }

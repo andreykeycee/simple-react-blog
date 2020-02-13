@@ -1,16 +1,9 @@
 import React from 'react'
 import Home from '@/components/Home'
+import { withAuthMiddleware } from '@/lib/auth'
 
-class IndexPage extends React.Component {
-  static async getInitialProps (context) {
-    console.log('test', Object.keys(context))
-
-    return {}
-  }
-
-  render() {
-    return <Home/>
-  }
+const IndexPage = () => {
+  return <Home/>
 }
 
-export default IndexPage
+export default withAuthMiddleware(IndexPage)
