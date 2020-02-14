@@ -1,8 +1,7 @@
 import { Arg, Field, InputType, Mutation, ObjectType, Query, registerEnumType, Resolver } from 'type-graphql'
 import { User } from '@/models/User'
 import { _Error, ErrorTypes } from 'srb-shared'
-import { register, login } from '@/controllers/auth'
-import { getUser } from '@/controllers/auth/user'
+import { register, login, getUser } from '@/controllers/auth'
 
 registerEnumType(ErrorTypes, { name: 'ErrorTypes' })
 

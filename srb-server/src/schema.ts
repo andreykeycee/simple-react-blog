@@ -1,7 +1,7 @@
 import { buildSchema } from 'type-graphql'
 import { AuthResolvers } from './api/auth'
 import { GraphQLJSON } from 'graphql-type-json'
-import * as path from "path"
+import path from 'path'
 
 export default async () => await buildSchema({
   validate: false,

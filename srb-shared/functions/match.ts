@@ -24,4 +24,4 @@ export const match = (compare) => {
   }
 }
 
-export const typeIs = (...types) => type => types.includes(type)
+export const typeIs = <T = string>(...types: T[]) => (type: T) => types.includes(type)
