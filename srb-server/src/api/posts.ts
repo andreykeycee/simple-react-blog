@@ -1,11 +1,9 @@
-import { Arg, Field, InputType, Mutation, Query, registerEnumType, Resolver } from 'type-graphql'
-import { BlogPost, BlogPostSearch, SearchField } from '@/models/BlogPost'
+import { Arg, Field, ID, InputType, Mutation, Query, Resolver } from 'type-graphql'
+import { BlogPost, BlogPostSearch } from '@/models/BlogPost'
 import { DateRangeClass } from '@/utils/sharedResolvers'
-import { DateObject, DateRange } from 'srb-shared'
+import { _BlogPost, DateObject, DateRange } from 'srb-shared'
 import { ObjectId } from '@/utils/types'
-import { getPost, getPosts } from '@/controllers/posts'
-
-registerEnumType(SearchField, { name: 'SearchField' })
+import { getPost, getPosts, savePost } from '@/controllers/posts'
 
 @InputType()
 export class BlogPostsSearchClass implements BlogPostSearch {
@@ -15,11 +13,20 @@ export class BlogPostsSearchClass implements BlogPostSearch {
   @Field(returns => DateRangeClass, { nullable: true })
   dateSearch: DateRange<DateObject>
 
-  @Field({ nullable: true })
+  @Field(returns => ID, { nullable: true })
+  author: ObjectId
+}
+
+@InputType()
+export class BlogPostInput implements _BlogPost {
+  @Field(returns => ID)
   author: ObjectId
 
-  @Field(returns => [SearchField], { nullable: true })
-  searchFields: SearchField[]
+  @Field()
+  title: string
+
+  @Field()
+  body: string
 }
 
 @Resolver()
@@ -31,16 +38,16 @@ export class BlogPostsResolvers {
     return getPosts(search)
   }
 
-  @Query(returns => BlogPost, { nullable: true })
+  @Query(returns => BlogPost)
   async post (
-    @Arg('_id') _id: ObjectId
+    @Arg('_id') _id: string
   ) {
     return getPost(_id)
   }
 
   @Mutation(returns => BlogPost)
   async savePost (
-    @Arg('post') post: BlogPost
+    @Arg('post') post: BlogPostInput
   ) {
     return savePost(post)
   }

@@ -20,6 +20,36 @@ input AuthRequest {
   password: String!
 }
 
+type BlogPost {
+  _id: ID!
+  author: User!
+  title: String!
+  body: String!
+}
+
+input BlogPostInput {
+  author: ID!
+  title: String!
+  body: String!
+}
+
+input BlogPostsSearchClass {
+  stringSearch: String
+  dateSearch: DateRangeClass
+  author: ID
+}
+
+input DateObjectClass {
+  day: Float!
+  month: Float!
+  year: Float!
+}
+
+input DateRangeClass {
+  start: DateObjectClass!
+  end: DateObjectClass!
+}
+
 enum ErrorTypes {
   REGISTER_FAILED
   LOGIN_FAILED
@@ -27,11 +57,14 @@ enum ErrorTypes {
 
 type Mutation {
   register(request: AuthRequest!): AuthPayload!
+  savePost(post: BlogPostInput!): BlogPost!
 }
 
 type Query {
   login(request: AuthRequest!): AuthPayload!
   user(token: String!): AuthPayload!
+  posts(search: BlogPostsSearchClass!): [BlogPost!]!
+  post(_id: String!): BlogPost!
 }
 
 type User {

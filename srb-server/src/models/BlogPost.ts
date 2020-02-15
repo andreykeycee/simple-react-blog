@@ -7,9 +7,9 @@ import { ObjectId } from '@/utils/types'
 @ObjectType()
 export class BlogPost implements _BlogPost {
   @Field(type => ID)
-  _id?: string
+  _id?: ObjectId
 
-  @Field()
+  @Field(type => User)
   @prop({ ref: User })
   author: Ref<User>
 
@@ -33,11 +33,4 @@ export type BlogPostSearch = {
   stringSearch?: string
   dateSearch?: DateRange<DateObject>
   author?: ObjectId
-  searchFields?: SearchField[]
-}
-
-export enum SearchField {
-  TITLE = 'TITLE',
-  BODY = 'BODY',
-  AUTHOR = 'AUTHOR'
 }
